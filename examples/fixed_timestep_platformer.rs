@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use resphys::{Collider, ColliderState, Vec2, AABB, FP};
+use resphys::{BodyHandle, Collider, ColliderHandle, ColliderState, AABB, FP};
 
 // Crude character controller
 
@@ -8,6 +8,15 @@ extern crate log;
 const FPS_INV: f32 = 1. / 60.;
 
 type PhysicsWorld = resphys::PhysicsWorld<TagType>;
+type Vec2 = resphys::Vec2;
+
+pub struct Player {
+    // physics data
+    body_handle: BodyHandle,
+    collider_handle: ColliderHandle,
+    // game state
+    is_grounded: bool,
+}
 
 #[macroquad::main("Controllable box")]
 async fn main() {
@@ -15,6 +24,9 @@ async fn main() {
     let mut bodies = resphys::BodySet::new();
     let mut colliders = resphys::ColliderSet::new();
 
+    // set up player
+
+    // create player physics data
     let body1 = resphys::builder::BodyDesc::new()
         .with_position(Vec2::from(360., 285.))
         .self_collision(false)
@@ -30,6 +42,14 @@ async fn main() {
     let _player_chandle = colliders
         .insert(collider1.build(player_bhandle), &mut bodies, &mut physics)
         .unwrap();
+
+    let mut player = Player {
+        body_handle: player_bhandle,
+        collider_handle: _player_chandle,
+        is_grounded: false,
+    };
+
+    // world generation
 
     for x in (0..=768).step_by(32) {
         add_tile(
@@ -68,7 +88,7 @@ async fn main() {
     loop {
         remaining_time += get_frame_time();
         while remaining_time >= FPS_INV {
-            physics_update(&mut physics, &mut bodies, &mut colliders, player_bhandle);
+            physics_update(&mut physics, &mut bodies, &mut colliders, &mut player);
             remaining_time -= FPS_INV;
         }
 
@@ -78,21 +98,53 @@ async fn main() {
     }
 }
 
+fn check_grounded(physics: &mut PhysicsWorld, player: &mut Player) -> bool{
+    // check if there are no collisions
+    if physics
+        .collisions_of(player.collider_handle)
+        .peekable()
+        .peek()
+        .is_none()
+    {
+        return false;
+    } else {
+        for (_, info) in physics.collisions_of(player.collider_handle) {
+            //println!("info: {:?}", info);
+            if info.normal.y() > 0 {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 fn physics_update(
     physics: &mut PhysicsWorld,
     bodies: &mut resphys::BodySet,
     colliders: &mut resphys::ColliderSet<TagType>,
-    player_bhandle: resphys::BodyHandle,
+    player: &mut Player,
 ) {
-    let player_body = &mut bodies[player_bhandle];
+    let player_body = &mut bodies[player.body_handle];
+
+    // get collision
+
+    // set if grounded
+    player.is_grounded = check_grounded(physics, player);
+    // set movement
 
     let gravity = Vec2::from(0., 5.);
 
-    player_body.velocity = player_body.velocity + gravity;
+    // gravity only happens when not grounded
+    if !player.is_grounded {
+        player_body.velocity = player_body.velocity + gravity;
+    } else {
+        player_body.velocity.set_y(0);
+    }
 
-    player_body.velocity = controls(player_body.velocity);
+    player_body.velocity = controls(player_body.velocity, player);
 
-    println!("{}", player_body.velocity);
+    //println!("{}", player_body.velocity);
+    //println!("{}", player.is_grounded);
 
     //player_body.velocity = player_body.velocity.mul_scalar(FPS_INV);
 
@@ -108,7 +160,7 @@ fn render(bodies: &resphys::BodySet, colliders: &resphys::ColliderSet<TagType>) 
 }
 
 // 32 is tile per second
-fn controls(mut velocity: Vec2) -> Vec2 {
+fn controls(mut velocity: Vec2, player: &Player) -> Vec2 {
     let input: f32 = {
         if is_key_down(KeyCode::Left) {
             -1.
@@ -127,13 +179,10 @@ fn controls(mut velocity: Vec2) -> Vec2 {
     //*velocity.x_mut() *= damped;
     // println!("vel: {}", velocity.x());
 
-    *velocity.x_mut() = velocity
-        .x()
-        .max(FP::from_num(-64))
-        .min(FP::from_num(64));
+    *velocity.x_mut() = velocity.x().max(FP::from_num(-128)).min(FP::from_num(128));
 
     if is_key_pressed(KeyCode::Up) {
-        velocity = velocity + Vec2::from(0., -128.);
+        velocity.set_y(-128.);
     }
     velocity
 }

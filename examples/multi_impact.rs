@@ -1,9 +1,10 @@
 use macroquad::prelude::*;
-use resphys::{Collider, ColliderState, Vec2, AABB, FP};
+use resphys::{Collider, ColliderState, AABB, FP};
 
 // A test if collision gets resolved properly even if multiple impacts happen
 
 const FPS_INV: f32 = 1. / 60.;
+type Vec2 = resphys::Vec2;
 
 #[macroquad::main("Hitting multiple colliders in a single step at high speed")]
 async fn main() {

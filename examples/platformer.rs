@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use resphys::{Collider, ColliderState, Vec2, AABB, FP};
+use resphys::{Collider, ColliderState, AABB, FP};
 
 // Crude character controller
 
@@ -8,6 +8,7 @@ extern crate log;
 const FPS_INV: f32 = 1. / 60.;
 
 type PhysicsWorld = resphys::PhysicsWorld<TagType>;
+type Vec2 = resphys::Vec2;
 
 #[macroquad::main("Controllable box")]
 async fn main() {

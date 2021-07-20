@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use resphys::{Collider, ColliderState, Vec2, AABB, FP};
+use resphys::{Collider, ColliderState, AABB, FP};
 
 // Body creation with builder assistance, event iteration and deletion of bodies
 
@@ -8,6 +8,7 @@ extern crate log;
 use log::debug;
 
 const FPS_INV: f32 = 1. / 60.;
+type Vec2 = resphys::Vec2;
 
 #[macroquad::main("Basic usage")]
 async fn main() {
