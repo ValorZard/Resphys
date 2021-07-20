@@ -9,6 +9,9 @@ keywords = [ "physics", "2d", "simple", "collision", "aabb"]
 license = "Apache-2.0"
 edition = "2018"
 
+[dependencies.fixed]
+version = "1.9"
+features = ["serde", "std", "serde-str", "num-traits"]
 
 [dependencies]
 generational-arena = "0.2.8"
@@ -16,6 +19,11 @@ fxhash = "0.2.1"
 petgraph = "0.5.1"
 glam = {version="0.9.4", features = ["mint"]}
 log = "0.4.11"
+# fixed point specific imports
+fixed-sqrt = "0.2.4"
+fixed-macro = "1.1.1"
+cordic = "0.1.5"
+num-traits = "0.2.14"
 
 [dev-dependencies]
 macroquad = "0.2.9"

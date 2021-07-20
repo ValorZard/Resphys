@@ -1,6 +1,6 @@
 pub use super::super::collision::AABB;
 pub use super::{Body, BodyHandle, BodyStatus, Collider, ColliderState};
-use glam::Vec2;
+use crate::Vec2;
 
 /// Builder for the `Body`. Start with `new`, finish with `build`.
 #[derive(Debug, Clone)]

@@ -1,5 +1,5 @@
 use super::collider_set::ColliderHandle;
-use glam::Vec2;
+use crate::Vec2;
 
 /// Describes a body.
 ///  

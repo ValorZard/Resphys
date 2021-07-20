@@ -1,6 +1,5 @@
-use glam::Vec2;
 use macroquad::*;
-use resphys::{Collider, ColliderState, AABB};
+use resphys::{Collider, ColliderState, AABB, Vec2, FP};
 
 // A test if collision gets resolved properly even if multiple impacts happen
 
@@ -13,12 +12,12 @@ async fn main() {
     let mut colliders = resphys::ColliderSet::new();
 
     let rectangle = AABB {
-        half_exts: Vec2::new(36., 36.),
+        half_exts: Vec2::from(36., 36.),
     };
 
     let body1 = resphys::builder::BodyDesc::new()
-        .with_position(Vec2::new(360., 0.))
-        .with_velocity(Vec2::new(0., 1600.))
+        .with_position(Vec2::from(360., 0.))
+        .with_velocity(Vec2::from(0., 1600.))
         .build();
     let collider1 = resphys::builder::ColliderDesc::new(rectangle, TagType::Moving);
 
@@ -28,7 +27,7 @@ async fn main() {
         .unwrap();
 
     let body2 = resphys::builder::BodyDesc::new()
-        .with_position(Vec2::new(340., 450.))
+        .with_position(Vec2::from(340., 450.))
         .make_static()
         .build();
     let collider2 = resphys::builder::ColliderDesc::new(rectangle, TagType::Collidable);
@@ -36,7 +35,7 @@ async fn main() {
     colliders.insert(collider2.build(handle2), &mut bodies, &mut physics);
 
     let body3 = resphys::builder::BodyDesc::new()
-        .with_position(Vec2::new(360., 450.))
+        .with_position(Vec2::from(360., 450.))
         .make_static()
         .build();
     let collider3 = resphys::builder::ColliderDesc::new(rectangle, TagType::Collidable);
@@ -84,10 +83,11 @@ fn draw_collider(collider: &Collider<TagType>, position: Vec2) {
     color.0[3] = (0.3 * 255.) as u8;
     // This works because there's currently only AABB shape. Half extents.
     let wh = collider.shape.half_exts;
-    let x_pos = position.x() - wh.x() + collider.offset.x();
-    let y_pos = position.y() - wh.y() + collider.offset.y();
-    draw_rectangle(x_pos, y_pos, wh.x() * 2., wh.y() * 2., color);
-    draw_rectangle_lines(x_pos, y_pos, wh.x() * 2., wh.y() * 2., 3., fill_color);
+    let x_pos = FP::to_num::<f32>(position.x() - wh.x() + collider.offset.x());
+    let y_pos = FP::to_num::<f32>(position.y() - wh.y() + collider.offset.y());
+    draw_rectangle(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., color);
+    draw_rectangle_lines(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., 3., fill_color);
+
 }
 
 #[derive(Clone, Copy, Debug)]

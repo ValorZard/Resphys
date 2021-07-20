@@ -1,4 +1,6 @@
-use glam::Vec2;
+// use glam::Vec2;
+use crate::{to_fp, Vec2, FP};
+//use fixed_macro::fixed;
 
 #[derive(Default, Copy, Clone, Debug)]
 pub struct AABB {
@@ -22,13 +24,13 @@ impl From<&Contact> for CollisionInfo {
 
 #[derive(Debug, Clone)]
 pub struct Contact {
-    pub depth: f32,
+    pub depth: FP,
     pub normal: Vec2,
     pub contact_point: Vec2,
 }
 
 impl Contact {
-    pub fn new(depth: f32, normal: Vec2, contact_point: Vec2) -> Self {
+    pub fn new(depth: FP, normal: Vec2, contact_point: Vec2) -> Self {
         Self {
             depth,
             normal,
@@ -89,12 +91,14 @@ pub fn contact_aabb_aabb(
     }
 
     let depth1 = overlap.x();
-    let normal1 = Vec2::new(distance.x().signum(), 0.);
+    //let normal1 = Vec2::new(distance.x().signum(), 0.);
+    let normal1 = Vec2::new(distance.x().signum(), to_fp(0.));
     let contact_point_x = Vec2::new(a_loc.x() + a_half_exts.x() * normal1.x(), a_loc.y());
     let contact1 = Contact::new(depth1, normal1, contact_point_x);
 
     let depth2 = overlap.y();
-    let normal2 = Vec2::new(0., distance.y().signum());
+    //let normal2 = Vec2::new(0., distance.y().signum());
+    let normal2 = Vec2::new(to_fp(0.), distance.y().signum());
     let contact_point_y = Vec2::new(a_loc.x(), a_loc.y() + a_half_exts.y() * normal2.y());
     let contact2 = Contact::new(depth2, normal2, contact_point_y);
 

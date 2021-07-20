@@ -1,7 +1,7 @@
 use super::super::collision::{self, ContactManifold, AABB};
 use super::super::collision::{Ray, Raycast};
 use super::body_set::BodyHandle;
-use glam::Vec2;
+use crate::{Vec2, FP};
 
 /// Describes a collider in the shape of `Shape`. Attached to a body.
 #[derive(Clone, Debug)]
@@ -75,7 +75,7 @@ pub fn is_penetrating<T>(
     position1: Vec2,
     collider2: &Collider<T>,
     position2: Vec2,
-    tolerance: f32,
+    tolerance: FP,
 ) -> bool {
     let position1 = position1 + collider1.offset;
     let position2 = position2 + collider2.offset;

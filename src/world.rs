@@ -4,7 +4,7 @@ use super::object::{
     collision_manifold, is_colliding, is_penetrating, Body, BodyHandle, BodySet, BodyStatus,
     Collider, ColliderHandle, ColliderSet, ColliderState,
 };
-use glam::Vec2;
+use crate::{Vec2, FP, to_fp};
 
 /// T - User supplied type used as a tag, present in all events
 pub struct PhysicsWorld<T> {
@@ -183,7 +183,7 @@ impl<T: Copy> PhysicsWorld<T> {
         // compute the new maximum movement for every body
         for (_, body) in bodies.iter_mut() {
             if let BodyStatus::Kinematic = body.status {
-                body.movement = body.velocity * dt;
+                body.movement = body.velocity.mul_scalar(dt);
             }
         }
 
@@ -244,10 +244,10 @@ fn step_x<T>(bodies: &mut BodySet, colliders: &mut ColliderSet<T>, body_handles:
 
                 if is_penetrating(
                     collider1,
-                    body1.position + Vec2::new(move_x, 0.),
+                    body1.position + Vec2::new(move_x, to_fp(0.)),
                     collider2,
                     body2.position,
-                    0.001,
+                    to_fp(0.001),
                 ) {
                     if body1.velocity.x() > 0. {
                         move_x = move_x.min(
@@ -315,10 +315,10 @@ fn step_y<T>(
                 {
                     if is_penetrating(
                         collider1,
-                        body1.position + Vec2::new(0., move_y),
+                        body1.position + Vec2::new(to_fp(0.), move_y),
                         collider2,
                         body2.position,
-                        0.001,
+                        to_fp(0.001),
                     ) {
                         if body1.velocity.y() > 0. {
                             move_y = move_y.min(

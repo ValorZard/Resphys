@@ -1,6 +1,5 @@
-use glam::Vec2;
 use macroquad::*;
-use resphys::{Collider, ColliderState, AABB};
+use resphys::{Collider, ColliderState, AABB, Vec2, FP};
 
 // Body creation with builder assistance, event iteration and deletion of bodies
 
@@ -12,28 +11,27 @@ const FPS_INV: f32 = 1. / 60.;
 
 #[macroquad::main("Basic usage")]
 async fn main() {
-
     let mut physics = resphys::PhysicsWorld::<TagType>::new();
     let mut bodies = resphys::BodySet::new();
     let mut colliders = resphys::ColliderSet::new();
 
     let rectangle = AABB {
-        half_exts: Vec2::new(36., 36.),
+        half_exts: Vec2::from_float(36., 36.),
     };
     let bottom_bar = AABB {
-        half_exts: Vec2::new(36., 8.),
+        half_exts: Vec2::from_float(36., 8.),
     };
 
     let body1 = resphys::builder::BodyDesc::new()
-        .with_position(Vec2::new(360., 285.)) // x 360 y 285.
-        .with_velocity(Vec2::new(75., 48.)) // x 75
+        .with_position(Vec2::from_float(360., 285.)) // x 360 y 285.
+        .with_velocity(Vec2::from_float(75., 48.)) // x 75
         .self_collision(false)
         .build();
     let collider1 = resphys::builder::ColliderDesc::new(rectangle, TagType::Moving)
-        .with_offset(Vec2::new(0., 0.));
+        .with_offset(Vec2::from_float(0., 0.));
 
     let collider1_2 = resphys::builder::ColliderDesc::new(bottom_bar, TagType::MovingSensor)
-        .with_offset(Vec2::new(0., 36. - 8.))
+        .with_offset(Vec2::from_float(0., 36. - 8.))
         .sensor();
 
     let body1_handle = bodies.insert(body1);
@@ -44,12 +42,12 @@ async fn main() {
     colliders.insert(collider1_2.build(body1_handle), &mut bodies, &mut physics);
 
     let body2 = resphys::builder::BodyDesc::new()
-        .with_position(Vec2::new(450., 450.))
+        .with_position(Vec2::from_float(450., 450.))
         .make_static()
         .build();
     let collider2 = resphys::builder::ColliderDesc::new(rectangle, TagType::Collidable);
     let collider2_2 = resphys::builder::ColliderDesc::new(rectangle, TagType::Collidable)
-        .with_offset(Vec2::new(0., 80.))
+        .with_offset(Vec2::from_float(0., 80.))
         .sensor();
 
     let body2_handle = bodies.insert(body2);
@@ -57,16 +55,16 @@ async fn main() {
     colliders.insert(collider2_2.build(body2_handle), &mut bodies, &mut physics);
 
     let body3 = resphys::builder::BodyDesc::new()
-        .with_position(Vec2::new(600., 360.))
+        .with_position(Vec2::from_int(600, 360))
         .make_static()
         .build();
     let collider3 = resphys::builder::ColliderDesc::new(rectangle, TagType::Collidable)
-        .with_offset(Vec2::new(0., -15.));
+        .with_offset(Vec2::from_int(0, -15));
     let body3_handle = bodies.insert(body3);
     colliders.insert(collider3.build(body3_handle), &mut bodies, &mut physics);
 
     let body4 = resphys::builder::BodyDesc::new()
-        .with_position(Vec2::new(375., 375.))
+        .with_position(Vec2::from_int(375, 375))
         .make_static()
         .build();
     let collider4 = resphys::builder::ColliderDesc::new(rectangle, TagType::Sensor).sensor();
@@ -119,7 +117,7 @@ async fn main() {
             };
             let player_body_handle = colliders[player].owner;
             let player_body = &mut bodies[player_body_handle];
-            player_body.velocity *= vel_mask;
+            player_body.velocity = player_body.velocity * vel_mask;
 
             to_remove.into_iter().for_each(|collision_handle| {
                 let collider_owner = colliders[collision_handle].owner;
@@ -151,10 +149,10 @@ fn draw_collider(collider: &Collider<TagType>, position: Vec2) {
     color.0[3] = (0.3 * 255.) as u8;
     // This works because there's currently only AABB shape. Half extents.
     let wh = collider.shape.half_exts;
-    let x_pos = position.x() - wh.x() + collider.offset.x();
-    let y_pos = position.y() - wh.y() + collider.offset.y();
-    draw_rectangle(x_pos, y_pos, wh.x() * 2., wh.y() * 2., color);
-    draw_rectangle_lines(x_pos, y_pos, wh.x() * 2., wh.y() * 2., 3., fill_color);
+    let x_pos = FP::to_num::<f32>(position.x() - wh.x() + collider.offset.x());
+    let y_pos = FP::to_num::<f32>(position.y() - wh.y() + collider.offset.y());
+    draw_rectangle(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., color);
+    draw_rectangle_lines(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., 3., fill_color);
 }
 #[derive(Clone, Copy, Debug)]
 enum TagType {
