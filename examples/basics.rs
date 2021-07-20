@@ -76,7 +76,7 @@ async fn main() {
     loop {
         remaining_time += get_frame_time();
         while remaining_time >= FPS_INV {
-            physics.step(FPS_INV, &mut bodies, &mut colliders);
+            physics.step(FP::from_num(FPS_INV), &mut bodies, &mut colliders);
 
             let mut to_remove = Vec::new();
             for event in physics.events().iter() {

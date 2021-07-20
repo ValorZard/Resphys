@@ -169,7 +169,7 @@ impl<T: Copy> PhysicsWorld<T> {
         &self.events
     }
 
-    pub fn step(&mut self, dt: f32, bodies: &mut BodySet, colliders: &mut ColliderSet<T>) {
+    pub fn step(&mut self, dt: FP, bodies: &mut BodySet, colliders: &mut ColliderSet<T>) {
         self.events.clear();
         self.events.append(&mut self.removal_events);
         self.body_handles.clear();

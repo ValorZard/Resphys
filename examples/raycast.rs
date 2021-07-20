@@ -79,7 +79,7 @@ async fn main() {
 
             player_body.velocity = controls(player_body.velocity);
 
-            physics.step(FPS_INV, &mut bodies, &mut colliders);
+            physics.step(FP::from_num(FPS_INV), &mut bodies, &mut colliders);
             remaining_time -= FPS_INV;
         }
 

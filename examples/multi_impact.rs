@@ -47,7 +47,7 @@ async fn main() {
     loop {
         remaining_time += get_frame_time();
         while remaining_time >= FPS_INV {
-            physics.step(FPS_INV, &mut bodies, &mut colliders);
+            physics.step(FP::from_num(FPS_INV), &mut bodies, &mut colliders);
 
             for event in physics.events().iter() {
                 println!("{:?}", event);
@@ -87,7 +87,6 @@ fn draw_collider(collider: &Collider<TagType>, position: Vec2) {
     let y_pos = FP::to_num::<f32>(position.y() - wh.y() + collider.offset.y());
     draw_rectangle(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., color);
     draw_rectangle_lines(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., 3., fill_color);
-
 }
 
 #[derive(Clone, Copy, Debug)]
