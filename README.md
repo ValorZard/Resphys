@@ -1,6 +1,6 @@
 # Resphys
 
-Simple 2D collision detection/resolution library supporting **only** AABB. Uses fixed point with the (fixed point crate)[https://docs.rs/fixed/1.9.0/fixed/]
+Simple 2D collision detection/resolution library supporting **only** AABB. Uses fixed point with the [fixed point crate](https://docs.rs/fixed/1.9.0/fixed/]) for complete determinism
 
 The library currently only depenetrates the shapes, without modifying their velocities. Its goal isn't to provide a complete physics simulation, but rather to provide collision detection and resolution for simple games.
 
