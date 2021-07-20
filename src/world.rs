@@ -4,7 +4,7 @@ use super::object::{
     collision_manifold, is_colliding, is_penetrating, Body, BodyHandle, BodySet, BodyStatus,
     Collider, ColliderHandle, ColliderSet, ColliderState,
 };
-use crate::{Vec2, FP, to_fp};
+use crate::{to_fp, Vec2, FP};
 
 /// T - User supplied type used as a tag, present in all events
 pub struct PhysicsWorld<T> {

@@ -68,23 +68,42 @@ async fn main() {
     loop {
         remaining_time += get_frame_time();
         while remaining_time >= FPS_INV {
-            let player_body = &mut bodies[player_bhandle];
-
-            player_body.velocity = player_body.velocity + Vec2::from(0., 64. * FPS_INV);
-
-            player_body.velocity = controls(player_body.velocity);
-
-            physics.step(FP::from_num(FPS_INV), &mut bodies, &mut colliders);
+            physics_update(&mut physics, &mut bodies, &mut colliders, player_bhandle);
             remaining_time -= FPS_INV;
         }
 
-        clear_background(Color::new(0., 1., 1., 1.));
-        for (_, collider) in colliders.iter() {
-            let body = &bodies[collider.owner];
-            draw_collider(&collider, body.position);
-        }
+        render(&bodies, &colliders);
 
         next_frame().await
+    }
+}
+
+fn physics_update(
+    physics: &mut PhysicsWorld,
+    bodies: &mut resphys::BodySet,
+    colliders: &mut resphys::ColliderSet<TagType>,
+    player_bhandle: resphys::BodyHandle,
+) {
+    let player_body = &mut bodies[player_bhandle];
+
+    let gravity = Vec2::from(0., 5.);
+
+    player_body.velocity = player_body.velocity + gravity;
+
+    player_body.velocity = controls(player_body.velocity);
+
+    println!("{}", player_body.velocity);
+
+    //player_body.velocity = player_body.velocity.mul_scalar(FPS_INV);
+
+    physics.step(FP::from_num(FPS_INV), bodies, colliders);
+}
+
+fn render(bodies: &resphys::BodySet, colliders: &resphys::ColliderSet<TagType>) {
+    clear_background(Color::new(0., 1., 1., 1.));
+    for (_, collider) in colliders.iter() {
+        let body = &bodies[collider.owner];
+        draw_collider(&collider, body.position);
     }
 }
 
@@ -100,18 +119,18 @@ fn controls(mut velocity: Vec2) -> Vec2 {
         }
     };
 
-    velocity = velocity + Vec2::from(input * 32. * 8. * FPS_INV, 0.);
+    velocity = velocity + Vec2::from(input, 0.);
 
     // if movement pressed
 
-    let damped = FP::from_num((1f32 - 0.2).powf(5. * FPS_INV));
-    *velocity.x_mut() *= damped;
+    //let damped = FP::from_num((1f32 - 0.2).powf(5.));
+    //*velocity.x_mut() *= damped;
     // println!("vel: {}", velocity.x());
 
     *velocity.x_mut() = velocity
         .x()
-        .max(FP::from_num(-32. * 4.))
-        .min(FP::from_num(32. * 4.));
+        .max(FP::from_num(-64))
+        .min(FP::from_num(64));
 
     if is_key_pressed(KeyCode::Up) {
         velocity = velocity + Vec2::from(0., -128.);

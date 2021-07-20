@@ -1,5 +1,5 @@
-use macroquad::*;
-use resphys::{Collider, ColliderState, AABB, Vec2, FP};
+use macroquad::prelude::*;
+use resphys::{Collider, ColliderState, Vec2, AABB, FP};
 
 extern crate log;
 
@@ -158,7 +158,10 @@ fn controls(mut velocity: Vec2) -> Vec2 {
     *velocity.x_mut() *= damped;
     // println!("vel: {}", velocity.x());
 
-    *velocity.x_mut() = velocity.x().max(FP::from_num(-32. * 4.)).min(FP::from_num(32. * 4.));
+    *velocity.x_mut() = velocity
+        .x()
+        .max(FP::from_num(-32. * 4.))
+        .min(FP::from_num(32. * 4.));
 
     if is_key_pressed(KeyCode::Up) {
         velocity = velocity + Vec2::from(0., -128.);
@@ -195,13 +198,26 @@ fn draw_collider(collider: &Collider<TagType>, position: Vec2) {
     // Quickly change color's alpha
     let fill_color = color;
 
-    color.0[3] = (0.3 * 255.) as u8;
+    color.a = 0.3;
 
     let wh = collider.shape.half_exts;
     let x_pos = FP::to_num::<f32>(position.x() - wh.x() + collider.offset.x());
     let y_pos = FP::to_num::<f32>(position.y() - wh.y() + collider.offset.y());
-    draw_rectangle(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., color);
-    draw_rectangle_lines(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., 3., fill_color);
+    draw_rectangle(
+        x_pos,
+        y_pos,
+        FP::to_num::<f32>(wh.x()) * 2.,
+        FP::to_num::<f32>(wh.y()) * 2.,
+        color,
+    );
+    draw_rectangle_lines(
+        x_pos,
+        y_pos,
+        FP::to_num::<f32>(wh.x()) * 2.,
+        FP::to_num::<f32>(wh.y()) * 2.,
+        3.,
+        fill_color,
+    );
 }
 
 fn draw_overlap_test_collider(collider: &Collider<TagType>, position: Vec2) {
@@ -212,13 +228,26 @@ fn draw_overlap_test_collider(collider: &Collider<TagType>, position: Vec2) {
     // Quickly change color's alpha
     let fill_color = color;
 
-    color.0[3] = (0.3 * 255.) as u8;
+    color.a = 0.3;
 
     let wh = collider.shape.half_exts;
     let x_pos = FP::to_num::<f32>(position.x() - wh.x() + collider.offset.x());
     let y_pos = FP::to_num::<f32>(position.y() - wh.y() + collider.offset.y());
-    draw_rectangle(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., color);
-    draw_rectangle_lines(x_pos, y_pos, FP::to_num::<f32>(wh.x()) * 2., FP::to_num::<f32>(wh.y()) * 2., 3., fill_color);
+    draw_rectangle(
+        x_pos,
+        y_pos,
+        FP::to_num::<f32>(wh.x()) * 2.,
+        FP::to_num::<f32>(wh.y()) * 2.,
+        color,
+    );
+    draw_rectangle_lines(
+        x_pos,
+        y_pos,
+        FP::to_num::<f32>(wh.x()) * 2.,
+        FP::to_num::<f32>(wh.y()) * 2.,
+        3.,
+        fill_color,
+    );
 }
 
 #[derive(Clone, Copy, Debug)]
