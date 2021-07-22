@@ -1,13 +1,15 @@
 use super::{BodySet, Collider};
 use generational_arena::Arena;
 use std::ops::{Index, IndexMut};
+use serde::{Serialize, Deserialize};
 
 /// Unique identifier of a collider stored in the world.
 /// If it gets removed the identifier will be reused.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ColliderHandle(generational_arena::Index);
 
 /// Container for colliders, removal is currently performed through `PhysicsWorld`, but access and modification is possible through this structure
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ColliderSet<T> {
     colliders: Arena<Collider<T>>,
 }

@@ -1,10 +1,11 @@
 use super::collider_set::ColliderHandle;
 use crate::Vec2;
+use serde::{Serialize, Deserialize};
 
 /// Describes a body.
 ///  
 /// It functions as a container for colliders.
-#[derive(Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Body {
     pub position: Vec2,
     /// static body CAN have velocity - it just behaves as if it had infinite mass  
@@ -34,7 +35,7 @@ impl Body {
     }
 }
 /// Status of the body, determines how it's affected by other bodies.
-#[derive(Copy, Clone, Debug)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug)]
 pub enum BodyStatus {
     /// Even when it moves it never collides with anything.
     Static,

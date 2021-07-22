@@ -5,7 +5,9 @@ use super::object::{
     Collider, ColliderHandle, ColliderSet, ColliderState,
 };
 use crate::{to_fp, Vec2, FP};
+use serde::{Serialize, Deserialize};
 
+#[derive(Serialize, Deserialize, Debug)]
 /// T - User supplied type used as a tag, present in all events
 pub struct PhysicsWorld<T> {
     pub collision_graph: CollisionGraph,

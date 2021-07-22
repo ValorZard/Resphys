@@ -2,9 +2,10 @@ use super::super::collision::{self, ContactManifold, AABB};
 use super::super::collision::{Ray, Raycast};
 use super::body_set::BodyHandle;
 use crate::{Vec2, FP};
+use serde::{Serialize, Deserialize};
 
 /// Describes a collider in the shape of `Shape`. Attached to a body.
-#[derive(Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Collider<T> {
     /// Currently the only shape is `AABB`
     pub shape: AABB,
@@ -106,7 +107,7 @@ pub fn collision_manifold<T>(
 }
 
 /// State of the collider, determines default collision resolution and types of events sent.
-#[derive(Copy, Clone, Debug)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug)]
 pub enum ColliderState {
     /// Solid body resolves collision.
     Solid,

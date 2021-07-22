@@ -3,10 +3,11 @@ use crate::ColliderHandle;
 use fxhash::FxHashMap;
 use petgraph::graph::{NodeIndex, UnGraph};
 use petgraph::visit::EdgeRef;
+use serde::{Serialize, Deserialize};
 
 type HandleNodeMap = FxHashMap<ColliderHandle, NodeIndex<usize>>;
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Interaction {
     Collision(CollisionInfo),
     Overlap,
@@ -27,6 +28,7 @@ impl Interaction {
 /// Structure for storing informations about the active collisions.  
 /// Currently unaware of anything besides the handles that collide or whether the collision started this frame.  
 /// Stores result of broadphase that narrowphase should use.
+#[derive(Serialize, Deserialize, Debug)]
 pub struct CollisionGraph {
     // <BodyHandle, whether it was added this update, index_type to match `bodies` struct>
     pub src: UnGraph<ColliderHandle, Option<Interaction>, usize>,

@@ -7,7 +7,9 @@ use std::ops::{Add, Div, Mul, Sub};
 
 use crate::{to_fp, FP};
 
-#[derive(Default, Copy, Clone, Debug)]
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Default, Copy, Clone, Debug)]
 pub struct Vec2 {
     pub x: FP,
     pub y: FP,

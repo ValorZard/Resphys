@@ -1,13 +1,15 @@
 use super::Body;
 use generational_arena::Arena;
 use std::ops::{Index, IndexMut};
+use serde::{Serialize, Deserialize};
 
 /// Unique identifier of a body stored in the world.
 /// If it gets removed the identifier will be reused.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct BodyHandle(generational_arena::Index);
 
 /// Container for bodies, removal is currently performed through `PhysicsWorld`, but access and modification is possible through this structure
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BodySet {
     bodies: Arena<Body>,
 }

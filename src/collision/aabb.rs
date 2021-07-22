@@ -1,15 +1,15 @@
 // use glam::Vec2;
 use crate::{to_fp, Vec2, FP};
-//use fixed_macro::fixed;
+use serde::{Serialize, Deserialize};
 
-#[derive(Default, Copy, Clone, Debug)]
+#[derive(Serialize, Deserialize, Default, Copy, Clone, Debug)]
 pub struct AABB {
     /// half width, half height
     pub half_exts: Vec2,
 }
 
 /// Minimal structure containing only the most important information about the collision.
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CollisionInfo {
     pub normal: Vec2,
 }
@@ -22,7 +22,7 @@ impl From<&Contact> for CollisionInfo {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Contact {
     pub depth: FP,
     pub normal: Vec2,
